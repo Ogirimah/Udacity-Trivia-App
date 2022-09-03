@@ -1,3 +1,4 @@
+from crypt import methods
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -16,16 +17,29 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
+    CORS(app, resources={r'/api/*' : {'origins' : '*'}})
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
     """
+    @app.after_request
+    def after_request(response):
+        response.headers.add(
+            'Access-Control-Allow-Headers', 'Content-type, Authorization'
+        )
+        response.headers.add(
+            'Access-Control-Allow-Methods', 'GET, POST, DELETE'
+        )
+        return response
 
     """
     @TODO:
     Create an endpoint to handle GET requests
     for all available categories.
     """
+    @app.route('/api/categories', methods=['GET'])
+    def get_all_categories():
+        pass
 
 
     """
@@ -34,12 +48,15 @@ def create_app(test_config=None):
     including pagination (every 10 questions).
     This endpoint should return a list of questions,
     number of total questions, current category, categories.
-
+    
     TEST: At this point, when you start the application
     you should see questions and categories generated,
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
+    @app.route('/api/questions', methods=['GET'])
+    def get_paginated_questions(**args):
+        pass
 
     """
     @TODO:
@@ -48,6 +65,9 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
+    @app.route('/api/questions/<question_id>')
+    def delete_question(question_id):
+        pass
 
     """
     @TODO:
@@ -59,6 +79,9 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
+    @app.route('/api/questions', methods=['POST'])
+    def post_new_question():
+        pass
 
     """
     @TODO:
@@ -70,6 +93,9 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
+    @app.route('/api/questions', methods=['POST'])
+    def get_question_by_search_term():
+        pass
 
     """
     @TODO:
@@ -79,6 +105,9 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
+    @app.route('/api/categories/<category_id>/questions', methods=['GET'])
+    def get_questions_by_category(category_id):
+        pass
 
     """
     @TODO:
@@ -91,6 +120,9 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+    @app.route('/api/quizzes', methods=['POST'])
+    def get_question_to_play_the_quiz():
+        pass
 
     """
     @TODO:
