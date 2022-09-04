@@ -71,6 +71,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['categories']), 6)
         self.assertTrue(data['message'])
 
+        self.tearDown()
+
     def test_get_paginated_question(self):
         res = self.client().get('/api/questions')
         data = json.loads(res.data)
@@ -82,6 +84,8 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['total_questions'], 19)
         self.assertTrue(data['current_category'])
         self.assertTrue(data['message'])
+
+        self.tearDown()
 
     def test_delete_question(self):
         res = self.client().delete('/api/questions/5')
@@ -95,7 +99,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(question, None)
 
         self.teardown_delete_question = True
-
         self.tearDown()
 
     def test_post_new_question(self):
@@ -106,13 +109,22 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual('success', True)
         self.assertEqual(len(data['questions']), 20)
 
+        self.teardown_post_new_question = True
+        self.tearDown()
+
     def test_get_question_by_search_term(self):
+
+        self.tearDown()
         pass
 
     def test_get_question_by_category(self):
+
+        self.tearDown()
         pass
 
     def test_get_question_to_play_the_quiz(self):
+
+        self.tearDown()
         pass
 
     # =================================================================================
