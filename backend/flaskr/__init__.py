@@ -10,6 +10,7 @@ from models import setup_db, Question, Category
 QUESTIONS_PER_PAGE = 10
 
 def paginate_questions(request, selection):
+    """Seperate questions to 10 per page"""
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
@@ -57,7 +58,8 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'categories': output_data
+            'categories': output_data,
+            'message': 'Categories successfuly retrieved'
         })
 
 
@@ -74,7 +76,7 @@ def create_app(test_config=None):
     Clicking on the page numbers should update the questions.
     """
     @app.route('/api/questions', methods=['GET'])
-    def get_paginated_questions(**args):
+    def get_paginated_questions():
         query = Category.query.all()
         output_data = [output.format() for output in query]
 
@@ -83,12 +85,12 @@ def create_app(test_config=None):
 
         if len(query) == 0:
             abort(404)
-        else:
-            if len(selection) == 0:
-                abort(404)
+        elif len(selection) == 0:
+            abort(404)
         
         return jsonify({
             'success': True,
+            'message': 'Questions successfully retrieved',
             'questions': list_of_questions,
             'total_questions': len(selection),
             'current_category': 1,
