@@ -19,6 +19,17 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgresql://{}/{}".format('localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
+        # Define test variables
+        self.test_question = {
+            'question': 'About how many taste buds does the human tongue have',
+            'answer': '10000',
+            'category': '1',
+            'difficulty': '3'
+            }
+
+        self.teardown_delete_question = False
+        self.teardown_post_new_question = False
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -28,7 +39,20 @@ class TriviaTestCase(unittest.TestCase):
     
     def tearDown(self):
         """Executed after each test"""
-        pass
+        if self.teardown_delete_question:
+            deleted_question = {
+            "answer": "Maya Angelou",
+            "category": 4,
+            "difficulty": 2,
+            "id": 5,
+            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+            }
+            deleted_question.insert()
+        elif self.teardown_post_new_question:
+            inserted_question = Question.query.filter(Question.answer.ilike('%{}%').format('10000')).one_or_none()
+            inserted_question.delete()
+
+        else: pass
 
     """
     TODO
@@ -45,8 +69,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(len(data['categories']), 6)
+        self.assertTrue(data['message'])
 
-    def test_paginated_question(self):
+    def test_get_paginated_question(self):
         res = self.client().get('/api/questions')
         data = json.loads(res.data)
 
@@ -56,6 +81,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data['categories']), 6)
         self.assertEqual(data['total_questions'], 19)
         self.assertTrue(data['current_category'])
+        self.assertTrue(data['message'])
 
     def test_delete_question(self):
         res = self.client().delete('/api/questions/5')
@@ -68,8 +94,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['message'])
         self.assertEqual(question, None)
 
+        self.teardown_delete_question = True
+
+        self.tearDown()
+
     def test_post_new_question(self):
-        pass
+        res = self.client().post('/api/questions', body=self.test_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 201)
+        self.assertEqual('success', True)
+        self.assertEqual(len(data['questions']), 20)
 
     def test_get_question_by_search_term(self):
         pass
