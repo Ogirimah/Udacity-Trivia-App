@@ -9,6 +9,16 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+def paginate_questions(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    questions = [question.format() for question in selection]
+    page_questions = questions[start:end]
+
+    return page_questions
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -39,7 +49,16 @@ def create_app(test_config=None):
     """
     @app.route('/api/categories', methods=['GET'])
     def get_all_categories():
-        pass
+        query = Category.query.all()
+        output_data = [output.format() for output in query]
+
+        if len(query) == 0:
+            abort(404)
+
+        return jsonify({
+            'success': True,
+            'categories': output_data
+        })
 
 
     """
@@ -56,7 +75,25 @@ def create_app(test_config=None):
     """
     @app.route('/api/questions', methods=['GET'])
     def get_paginated_questions(**args):
-        pass
+        query = Category.query.all()
+        output_data = [output.format() for output in query]
+
+        selection = Question.query.all()
+        list_of_questions = paginate_questions(request, selection)
+
+        if len(query) == 0:
+            abort(404)
+        else:
+            if len(selection) == 0:
+                abort(404)
+        
+        return jsonify({
+            'success': True,
+            'questions': list_of_questions,
+            'total_questions': len(selection),
+            'current_category': 1,
+            'categories': output_data
+        })
 
     """
     @TODO:
@@ -65,9 +102,25 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
-    @app.route('/api/questions/<question_id>')
+    @app.route('/api/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
-        pass
+        try:
+            question = Question.query.filter(Question.id == question_id).one_or_none()
+            question_detail = question.format()['question']
+
+            if question is None:
+                abort(404)
+
+            question.delete()
+
+            return jsonify({
+                'success': True,
+                'message': f'Question: "{question_detail}" has been deleted'
+            })
+        except:
+            abort(422)
+        
+
 
     """
     @TODO:
