@@ -188,8 +188,7 @@ def create_app(test_config=None):
             try:
                 questions = Question.query.filter(Question.question.ilike('%{}%'.format(searchTerm))).all()
                 formated_questions = [question.format() for question in questions]
-                print(f'formated question: {formated_questions}')
-
+                
                 return jsonify({
                     'success': True,
                     'message': 'Questions successfully retrieved by searchTerm',
@@ -207,9 +206,22 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-    @app.route('/api/categories/<category_id>/questions', methods=['GET'])
+    @app.route('/api/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
-        pass
+        try:
+            questions = Question.query.filter(Question.category == category_id).all()
+            formated_questions = paginate_questions(request, questions)
+
+
+            return jsonify({
+                'success': True,
+                'message': f'All questions of category {category_id} were retrieved',
+                'questions': formated_questions,
+                'no_of_questions': len(formated_questions)
+            })
+        except:
+            abort(404)
+
 
     """
     @TODO:
