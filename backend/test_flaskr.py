@@ -24,7 +24,7 @@ class TriviaTestCase(unittest.TestCase):
             'question': 'About how many taste buds does the human tongue have',
             'answer': '10000',
             'category': '1',
-            'difficulty': '3'
+            'difficulty': 3
             }
 
         self.teardown_delete_question = False
@@ -47,9 +47,17 @@ class TriviaTestCase(unittest.TestCase):
             "id": 5,
             "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
             }
-            deleted_question.insert()
+            question = Question(
+                # id=deleted_question['id'],
+                question=deleted_question['question'],
+                answer=deleted_question['answer'],
+                category=deleted_question['category'],
+                difficulty=deleted_question['difficulty']
+            )
+            question.insert()
         elif self.teardown_post_new_question:
-            inserted_question = Question.query.filter(Question.answer.ilike('%{}%').format('10000')).one_or_none()
+            inserted_question = Question.query.filter(Question.answer.ilike('%10000%')).one_or_none()
+            print(f'Inserted Question: {inserted_question}')
             inserted_question.delete()
 
         else: pass
@@ -62,60 +70,67 @@ class TriviaTestCase(unittest.TestCase):
     # =================================================================================
     # Test for all endpoints
     # =================================================================================
-    def test_get_all_categories(self):
-        res = self.client().get('/api/categories')
-        data = json.loads(res.data)
+    # def test_get_all_categories(self):
+    #     res = self.client().get('/api/categories')
+    #     data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertEqual(len(data['categories']), 6)
-        self.assertTrue(data['message'])
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertEqual(len(data['categories']), 6)
+    #     self.assertTrue(data['message'])
 
-        self.tearDown()
+    #     self.tearDown()
 
-    def test_get_paginated_question(self):
-        res = self.client().get('/api/questions')
-        data = json.loads(res.data)
+    # def test_get_paginated_question(self):
+    #     res = self.client().get('/api/questions')
+    #     data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['questions'])
-        self.assertEqual(len(data['categories']), 6)
-        self.assertEqual(data['total_questions'], 19)
-        self.assertTrue(data['current_category'])
-        self.assertTrue(data['message'])
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertTrue(data['questions'])
+    #     self.assertEqual(len(data['categories']), 6)
+    #     self.assertEqual(data['total_questions'], 19)
+    #     self.assertTrue(data['current_category'])
+    #     self.assertTrue(data['message'])
 
-        self.tearDown()
+    #     self.tearDown()
 
-    def test_delete_question(self):
-        res = self.client().delete('/api/questions/5')
-        data = json.loads(res.data)
+    # def test_delete_question(self):
+    #     res = self.client().delete('/api/questions/5')
+    #     data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == 5).one_or_none()
+    #     question = Question.query.filter(Question.id == 5).one_or_none()
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['message'])
-        self.assertEqual(question, None)
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertTrue(data['message'])
+    #     self.assertEqual(question, None)
 
-        self.teardown_delete_question = True
-        self.tearDown()
+    #     self.teardown_delete_question = True
+    #     self.tearDown()
+    #     self.teardown_delete_question = False
 
-    def test_post_new_question(self):
-        res = self.client().post('/api/questions', body=self.test_question)
-        data = json.loads(res.data)
+    # def test_post_new_question(self):
+    #     res = self.client().post('/api/questions', json=self.test_question)
+    #     print(f'{res}')
+    #     data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 201)
-        self.assertEqual('success', True)
-        self.assertEqual(len(data['questions']), 20)
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertEqual(data['total_questions'], 20)
+    #     self.assertTrue(data['questions'])
 
-        self.teardown_post_new_question = True
-        self.tearDown()
+    #     self.teardown_post_new_question = True
+    #     self.tearDown()
+    #     self.teardown_post_new_question = False
 
     def test_get_question_by_search_term(self):
+        res = self.client().post('/api/questions', json={'searchTerm': 'title'})
+        data = json.loads(res.data)
+
+        
 
         self.tearDown()
-        pass
 
     def test_get_question_by_category(self):
 
