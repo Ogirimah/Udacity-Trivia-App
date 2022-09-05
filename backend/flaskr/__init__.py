@@ -136,7 +136,35 @@ def create_app(test_config=None):
     """
     @app.route('/api/questions', methods=['POST'])
     def post_new_question():
-        pass
+        body = request.get_json()
+
+        new_question = body.get('question', None)
+        new_answer = body.get('answer', None)
+        new_category = body.get('category', None)
+        new_difficulty = body.get('difficulty', None)
+
+        try:
+            insert_question = Question(
+                question=new_question,
+                answer=new_answer,
+                category=new_category,
+                difficulty=new_difficulty
+            )
+            insert_question.insert()
+
+            all_questions = Question.query.order_by(Question.id).all()
+            formated_question = [question.format() for question in all_questions]
+            # print(f'{all_questions}')
+
+            return jsonify({
+                'success': True,
+                'message': 'Question successfully created',
+                'total_questions': len(formated_question),
+                'questions': formated_question
+            })
+        except:
+            abort(422)
+
 
     """
     @TODO:
