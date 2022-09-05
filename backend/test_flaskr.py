@@ -125,17 +125,28 @@ class TriviaTestCase(unittest.TestCase):
     #     self.teardown_post_new_question = False
 
     def test_get_question_by_search_term(self):
-        res = self.client().post('/api/questions', json={'searchTerm': 'title'})
+        res = self.client().post('/api/searchQuestions', json={'searchTerm': 'title'})
         data = json.loads(res.data)
 
-        
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['message'])
+        self.assertGreater(data['no_of_questions'], 0)
 
         self.tearDown()
 
     def test_get_question_by_category(self):
+        res = self.client().get('/api/categories/1/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['message'])
+        self.assertGreater(data['no_of_questions'], 0)
 
         self.tearDown()
-        pass
 
     def test_get_question_to_play_the_quiz(self):
 
