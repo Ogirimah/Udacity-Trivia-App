@@ -176,9 +176,28 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    @app.route('/api/questions', methods=['POST'])
+    @app.route('/api/searchQuestions', methods=['POST'])
     def get_question_by_search_term():
-        pass
+        body = request.get_json()
+        searchTerm = body.get('searchTerm', None)
+
+        if searchTerm == None:
+            abort(400)
+
+        else:
+            try:
+                questions = Question.query.filter(Question.question.ilike('%{}%'.format(searchTerm))).all()
+                formated_questions = [question.format() for question in questions]
+                print(f'formated question: {formated_questions}')
+
+                return jsonify({
+                    'success': True,
+                    'message': 'Questions successfully retrieved by searchTerm',
+                    'questions': formated_questions,
+                    'no_of_questions': len(formated_questions)
+                })
+            except:
+                abort(422)
 
     """
     @TODO:
