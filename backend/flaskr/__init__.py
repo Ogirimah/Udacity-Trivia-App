@@ -48,7 +48,7 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests
     for all available categories.
     """
-    @app.route('/api/categories', methods=['GET'])
+    @app.route('/categories', methods=['GET'])
     def get_all_categories():
         query = Category.query.all()
         output_data = [output.format() for output in query]
@@ -75,7 +75,7 @@ def create_app(test_config=None):
     ten questions per page and pagination at the bottom of the screen for three pages.
     Clicking on the page numbers should update the questions.
     """
-    @app.route('/api/questions', methods=['GET'])
+    @app.route('/questions', methods=['GET'])
     def get_paginated_questions():
         query = Category.query.all()
         output_data = [output.format() for output in query]
@@ -104,7 +104,7 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page.
     """
-    @app.route('/api/questions/<int:question_id>', methods=['DELETE'])
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
         try:
             question = Question.query.filter(Question.id == question_id).one_or_none()
@@ -134,7 +134,7 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.
     """
-    @app.route('/api/questions', methods=['POST'])
+    @app.route('/questions', methods=['POST'])
     def post_new_question():
         body = request.get_json()
 
@@ -176,7 +176,7 @@ def create_app(test_config=None):
     only question that include that string within their question.
     Try using the word "title" to start.
     """
-    @app.route('/api/searchQuestions', methods=['POST'])
+    @app.route('/searchQuestions', methods=['POST'])
     def get_question_by_search_term():
         body = request.get_json()
         searchTerm = body.get('searchTerm', None)
@@ -188,7 +188,7 @@ def create_app(test_config=None):
             try:
                 questions = Question.query.filter(Question.question.ilike('%{}%'.format(searchTerm))).all()
                 formated_questions = [question.format() for question in questions]
-                
+
                 return jsonify({
                     'success': True,
                     'message': 'Questions successfully retrieved by searchTerm',
@@ -206,21 +206,31 @@ def create_app(test_config=None):
     categories in the left column will cause only questions of that
     category to be shown.
     """
-    @app.route('/api/categories/<int:category_id>/questions', methods=['GET'])
+    @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
-        try:
-            questions = Question.query.filter(Question.category == category_id).all()
-            formated_questions = paginate_questions(request, questions)
-
-
+        if category_id==None:
+            query = Question.query.order_by(Question.id).all()
+            questions = [question.format() for question in query]
             return jsonify({
                 'success': True,
-                'message': f'All questions of category {category_id} were retrieved',
-                'questions': formated_questions,
-                'no_of_questions': len(formated_questions)
+                'message': 'Questions from all categories retrieved',
+                'question': questions,
+                'no_of_questions': len(questions)
             })
-        except:
-            abort(404)
+        else:
+            try:
+                questions = Question.query.filter(Question.category == category_id).all()
+                formated_questions = paginate_questions(request, questions)
+
+
+                return jsonify({
+                    'success': True,
+                    'message': f'All questions of category {category_id} were retrieved',
+                    'questions': formated_questions,
+                    'no_of_questions': len(formated_questions)
+                })
+            except:
+                abort(404)
 
 
     """
@@ -234,9 +244,11 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
-    @app.route('/api/quizzes', methods=['POST'])
+    @app.route('/quizzes', methods=['POST'])
     def get_question_to_play_the_quiz():
-        pass
+        body = request.get_json()
+        previous_questions = body.get('previous_questions', None)
+        quiz_category = body.get('quiz_category', None)
 
     """
     @TODO:
