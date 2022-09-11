@@ -1,11 +1,16 @@
 from crypt import methods
+from operator import and_
 import os
+from tkinter.messagebox import NO
+from unicodedata import category
 from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
+
+from sqlalchemy import func
 
 QUESTIONS_PER_PAGE = 10
 
@@ -28,7 +33,7 @@ def create_app(test_config=None):
     """
     @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     """
-    CORS(app, resources={r'/api/*' : {'origins' : '*'}})
+    CORS(app, resources={r'/*' : {'origins' : '*'}})
 
     """
     @TODO: Use the after_request decorator to set Access-Control-Allow
@@ -83,19 +88,18 @@ def create_app(test_config=None):
         selection = Question.query.all()
         list_of_questions = paginate_questions(request, selection)
 
-        if len(query) == 0:
+        if len(list_of_questions) == 0:
             abort(404)
-        elif len(selection) == 0:
-            abort(404)
-        
-        return jsonify({
-            'success': True,
-            'message': 'Questions successfully retrieved',
-            'questions': list_of_questions,
-            'total_questions': len(selection),
-            'current_category': 1,
-            'categories': output_data
-        })
+
+        else:
+            return jsonify({
+                'success': True,
+                'message': 'Questions successfully retrieved',
+                'questions': list_of_questions,
+                'total_questions': len(selection),
+                'current_category': 1,
+                'categories': output_data
+            })
 
     """
     @TODO:
@@ -143,26 +147,29 @@ def create_app(test_config=None):
         new_category = body.get('category', None)
         new_difficulty = body.get('difficulty', None)
 
-        try:
-            insert_question = Question(
-                question=new_question,
-                answer=new_answer,
-                category=new_category,
-                difficulty=new_difficulty
-            )
-            insert_question.insert()
+        if new_question or new_answer or new_category or new_difficulty:
+            try:
+                insert_question = Question(
+                    question=new_question,
+                    answer=new_answer,
+                    category=new_category,
+                    difficulty=new_difficulty
+                )
+                insert_question.insert()
 
-            all_questions = Question.query.order_by(Question.id).all()
-            formated_question = [question.format() for question in all_questions]
-            # print(f'{all_questions}')
+                all_questions = Question.query.order_by(Question.id).all()
+                formated_question = [question.format() for question in all_questions]
+                # print(f'{all_questions}')
 
-            return jsonify({
-                'success': True,
-                'message': 'Question successfully created',
-                'total_questions': len(formated_question),
-                'questions': formated_question
-            })
-        except:
+                return jsonify({
+                    'success': True,
+                    'message': 'Question successfully created',
+                    'total_questions': len(formated_question),
+                    'questions': formated_question
+                })
+            except:
+                abort(500)
+        else:
             abort(422)
 
 
@@ -208,7 +215,7 @@ def create_app(test_config=None):
     """
     @app.route('/categories/<int:category_id>/questions', methods=['GET'])
     def get_questions_by_category(category_id):
-        if category_id==None:
+        if category_id==0:
             query = Question.query.order_by(Question.id).all()
             questions = [question.format() for question in query]
             return jsonify({
@@ -217,7 +224,7 @@ def create_app(test_config=None):
                 'question': questions,
                 'no_of_questions': len(questions)
             })
-        else:
+        elif category_id in [1, 2, 3, 4, 5, 6]:
             try:
                 questions = Question.query.filter(Question.category == category_id).all()
                 formated_questions = paginate_questions(request, questions)
@@ -231,6 +238,8 @@ def create_app(test_config=None):
                 })
             except:
                 abort(404)
+        else:
+            abort(422)
 
 
     """
@@ -249,12 +258,66 @@ def create_app(test_config=None):
         body = request.get_json()
         previous_questions = body.get('previous_questions', None)
         quiz_category = body.get('quiz_category', None)
+        category_id = quiz_category['id']
+
+        # Conditional for the quiz_category goten from the frontend
+        # Can be a number between 0-6
+        try:
+            if quiz_category == 0:
+
+                # Conditional for the questions in the quiz_category gotten from the frontend
+                # Can be None or a list of ids
+                if previous_questions is None:
+                    query = Question.query.all()
+                    print(f'{query}')
+                else:
+                    # Previous_question != None
+                    query = Question.query.filter(Question.id.notin_(previous_questions)).all()
+            else:
+                # Has previous_questions and quiz_category
+                query = Question.query.filter(Question.category==category_id, Question.id.notin_(previous_questions)).all()
+
+            question = None
+            if (query):
+                question = random.choice(query)
+
+            formatted_question = question.format()
+            return jsonify({
+                'success': True,
+                'questions': formatted_question,
+                'message': 'Random unanswered question has been retrieved'
+            })
+        except:
+            abort(422)
 
     """
     @TODO:
     Create error handlers for all expected errors
     including 404 and 422.
     """
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "Resource Not Found"
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "Not Processable"
+        }), 422
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "Bad Request"
+        }), 400
 
     return app
 
