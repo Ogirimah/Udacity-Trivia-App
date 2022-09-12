@@ -68,7 +68,6 @@ class TriviaTestCase(unittest.TestCase):
             question.insert()
         elif self.teardown_post_new_question:
             inserted_question = Question.query.filter(Question.answer.ilike('%10000%')).one_or_none()
-            print(f'Inserted Question: {inserted_question}')
             inserted_question.delete()
         else: pass
 
@@ -91,7 +90,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.tearDown()
 
-    def test_get_paginated_question(self):
+    def test_get_paginated_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
 
@@ -122,7 +121,6 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_post_new_question(self):
         res = self.client().post('/questions', json=self.test_question)
-        print(f'{res}')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -197,7 +195,7 @@ class TriviaTestCase(unittest.TestCase):
                 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'Resource Not Found')
+        self.assertEqual(data['message'], 'Not Processable')
 
     def test_400_no_searchTerm(self):
         res = self.client().post('/searchQuestions')
@@ -213,7 +211,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'Resource Not Found')
+        self.assertEqual(data['message'], 'Not Processable')
 
     def test_422_no_question_to_delete(self):
         res = self.client().delete('/questions/1000')
