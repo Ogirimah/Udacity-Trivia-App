@@ -261,7 +261,7 @@ def create_app(test_config=None):
         # Conditional for the quiz_category goten from the frontend
         # Can be a number between 0-6
         try:
-            if quiz_category == 0:
+            if category_id == 0:
 
                 # Conditional for the questions in the quiz_category gotten from the frontend
                 # Can be None or a list of ids
@@ -280,12 +280,17 @@ def create_app(test_config=None):
             if (query):
                 question = random.choice(query)
 
-            formatted_question = question.format()
-            return jsonify({
-                'success': True,
-                'question': formatted_question,
-                'message': 'Random unanswered question has been retrieved'
-            })
+                formatted_question = question.format()
+                return jsonify({
+                    'success': True,
+                    'question': formatted_question,
+                    'message': 'Random unanswered question has been retrieved'
+                })
+            else:
+                return jsonify({
+                    'success': True,
+                    'message': 'All questions in this category have been answered'
+                })
         except:
             abort(422)
 
