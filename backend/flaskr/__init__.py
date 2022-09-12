@@ -1,7 +1,4 @@
-from crypt import methods
-from operator import and_
 import os
-from tkinter.messagebox import NO
 from unicodedata import category
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy 
@@ -56,7 +53,7 @@ def create_app(test_config=None):
     @app.route('/categories', methods=['GET'])
     def get_all_categories():
         query = Category.query.all()
-        output_data = [output.format() for output in query]
+        output_data = {output.id: output.type for output in query}
 
         if len(query) == 0:
             abort(404)
@@ -83,7 +80,8 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['GET'])
     def get_paginated_questions():
         query = Category.query.all()
-        output_data = [output.format() for output in query]
+        # output_data = [output.format() for output in query]
+        output_data = {category.id: category.type for category in query}
 
         selection = Question.query.all()
         list_of_questions = paginate_questions(request, selection)
@@ -147,7 +145,7 @@ def create_app(test_config=None):
         new_category = body.get('category', None)
         new_difficulty = body.get('difficulty', None)
 
-        if new_question or new_answer or new_category or new_difficulty:
+        if new_question and new_answer and new_category and new_difficulty:
             try:
                 insert_question = Question(
                     question=new_question,
@@ -273,6 +271,7 @@ def create_app(test_config=None):
                 else:
                     # Previous_question != None
                     query = Question.query.filter(Question.id.notin_(previous_questions)).all()
+                    
             else:
                 # Has previous_questions and quiz_category
                 query = Question.query.filter(Question.category==category_id, Question.id.notin_(previous_questions)).all()
@@ -284,7 +283,7 @@ def create_app(test_config=None):
             formatted_question = question.format()
             return jsonify({
                 'success': True,
-                'questions': formatted_question,
+                'question': formatted_question,
                 'message': 'Random unanswered question has been retrieved'
             })
         except:
