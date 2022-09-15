@@ -1,3 +1,18 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Udacitrivia](#udacitrivia)
+  - [Introduction](#introduction)
+  - [Starting the Project](#starting-the-project)
+  - [About the Stack](#about-the-stack)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+  - [The Repository Tree Structure](#the-repository-tree-structure)
+  - [Guide to Cloning the Repository](#guide-to-cloning-the-repository)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Udacitrivia
 
 ## Introduction

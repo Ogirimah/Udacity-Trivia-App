@@ -1,3 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Frontend - Trivia API](#frontend---trivia-api)
+  - [Getting Setup](#getting-setup)
+    - [Installing Dependencies](#installing-dependencies)
+  - [Frontend Directory Structure](#frontend-directory-structure)
+  - [Required Tasks](#required-tasks)
+    - [Running Your Frontend in Dev Mode](#running-your-frontend-in-dev-mode)
+    - [Request Formatting](#request-formatting)
+    - [Optional: Updating Endpoints and API behavior](#optional-updating-endpoints-and-api-behavior)
+    - [Optional: Styling](#optional-styling)
+    - [Optional: Game Play Mechanics](#optional-game-play-mechanics)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Frontend - Trivia API
 
 ## Getting Setup

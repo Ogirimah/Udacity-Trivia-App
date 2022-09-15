@@ -1,3 +1,22 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Backend - Trivia API](#backend---trivia-api)
+  - [Setting up the Backend](#setting-up-the-backend)
+    - [Install Dependencies](#install-dependencies)
+      - [Key Pip Dependencies](#key-pip-dependencies)
+    - [Set up the Database](#set-up-the-database)
+    - [Run the Server](#run-the-server)
+  - [Backend Directory Structure](#backend-directory-structure)
+  - [Endpoints](#endpoints)
+    - [List of Endpoints](#list-of-endpoints)
+  - [Contributors](#contributors)
+    - [1. Use test driven development](#1-use-test-driven-development)
+    - [2. PEP8](#2-pep8)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Backend - Trivia API
 
 ## Setting up the Backend
