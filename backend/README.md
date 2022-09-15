@@ -18,9 +18,9 @@ pip install -r requirements.txt
 
 - [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
-- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use to handle the lightweight SQL database. You'll primarily work in `app.py`and can reference `models.py`.
+- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we used to handle the lightweight SQL database. Its configuration was defined in the `/flaskr` directory and also in`test_flaskr.py` file for development setup.
 
-- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross-origin requests from our frontend server.
+- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we used to handle cross-origin requests from our frontend server.
 
 ### Set up the Database
 
@@ -44,6 +44,7 @@ To run the server, execute:
 
 ```bash
 export FLASK_APP=flaskr
+export FLASK_DEBUG=True   # For development setup
 flask run
 ```
 
@@ -69,7 +70,9 @@ flask run
 
 ## Endpoints
 
-The endpoints are prefixed with the domain that the project is running from. So for a local deployment setup, the endpoints will be prfixed by the localhost and port number, ie `http://localhost:5000`. Below are the endpoints the frontend sends requests to.
+The endpoints are prefixed with the domain that the project is running from. So for a local deployment setup, the endpoints will be prfixed by the localhost and port number, i.e `http://localhost:5000`.
+
+Below are the endpoints the frontend sends requests to.
 
 ### List of Endpoints
 
@@ -260,7 +263,7 @@ python test_flaskr.py
 
 ### 2. PEP8
 
-Your code should be in accordance with pep8 coding style. for details on pep8, checkout the pep8 guide
+Your code should be in accordance with pep8 coding style. for details on pep8, checkout the [pep8 guide](https://peps.python.org/pep-0008/)
 
 > **Recognition**
 Once your code is reviewed and merged, we will include you in the list of contributors to the project.

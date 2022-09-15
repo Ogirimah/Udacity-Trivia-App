@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This is a project that requires each student to complete the backend implementation of a Trivia web app as part of the requirements to complete the Udacity Full-Stack Nono-degree program.
+This is a project that requires each student to complete the backend implementation of a Trivia web app as part of the requirements to complete the Udacity Full-Stack Nono-degree program. The API needs to be capable of taking requests from the frontend, query the database, and return an appropriate and well-formated response to the frontend.
 
-It strengthens each student's ability to implement, test and document well structured APIs.
+The project strengthens each student's ability to implement, test and document well structured APIs.
 
 ## Starting the Project
 

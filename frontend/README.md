@@ -18,6 +18,34 @@ npm install
 
 > _tip_: `npm i` is shorthand for `npm install`
 
+## Frontend Directory Structure
+
+```
+├── README.md
+├── node_modules
+├── package-lock.json
+├── package.json
+├── public
+│   ├── art.svg
+│   ├── delete.png
+│   ├── entertainment.svg
+│   ├── favicon.ico
+│   ├── geography.svg
+│   ├── history.svg
+│   ├── index.html
+│   ├── manifest.json
+│   ├── science.svg
+│   └── sports.svg
+└── src
+    ├── App.js
+    ├── App.test.js
+    ├── components
+    ├── index.js
+    └── stylesheets
+```
+
+----
+
 ## Required Tasks
 
 ### Running Your Frontend in Dev Mode
@@ -56,65 +84,3 @@ Currently, when a user plays the game they play up to five questions of the chos
 You can optionally update this game play to increase the number of questions or whatever other game mechanics you decide. Make sure to specify the new mechanics of the game in the README of the repo you submit so the reviewers are aware that the behavior is correct.
 
 ---
-
-## Frontend Directory Structure
-
-```
-├── README.md
-├── node_modules
-├── package-lock.json
-├── package.json
-├── public
-│   ├── art.svg
-│   ├── delete.png
-│   ├── entertainment.svg
-│   ├── favicon.ico
-│   ├── geography.svg
-│   ├── history.svg
-│   ├── index.html
-│   ├── manifest.json
-│   ├── science.svg
-│   └── sports.svg
-└── src
-    ├── App.js
-    ├── App.test.js
-    ├── components
-    ├── index.js
-    └── stylesheets
-```
-
-----
-
-## DO NOT PROCEED: ENDPOINT SPOILERS
-
-> Only read the below to confirm your notes regarding the expected API endpoint behavior based on reading the frontend codebase.
-
-### Expected endpoints and behaviors
-
-`GET '/categories'`
-
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs.
-
-```json
-{
-  "categories": {
-    "1": "Science",
-    "2": "Art",
-    "3": "Geography",
-    "4": "History",
-    "5": "Entertainment",
-    "6": "Sports"
-  }
-}
-```
-
----
-
-`GET '/questions?page=${integer}'`
-
-- Fetches a paginated set of questions, a total number of questions, all categories and current category string.
-- Request Arguments: `page` - integer
-- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
-
