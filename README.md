@@ -31,7 +31,7 @@ Before starting the project your device needs to have:
 
 To run the project locally, follow the below steps:
 
-1. Clone the repository to your device. If you need assistance doing this, use this [guide]()
+1. Clone the repository to your device. If you need assistance doing this, use the guide below
 
 1. Run the backend
 
